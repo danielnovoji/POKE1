@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public abstract class Pokemon {
     private String pokemonName;
     private int pokemonType;
@@ -119,9 +117,48 @@ public abstract class Pokemon {
         this.pokemonBaseDamage = pokemonBaseDamage;
     }
 
+    public boolean pokemonCanEvolve (int hp, int ap) {
+        boolean allowedToEvolve= false;
+        if (this.currentHP>=hp && this.currentAP>=ap) {
+            allowedToEvolve=true;
+        }
+        return allowedToEvolve;
+    }
+    public abstract boolean evolve(int hp, int ap);
+    public void newStats(String pokemonName, int level,boolean canEvolve, int maxHP, int maxAP) {
+        this.pokemonName = pokemonName;
+        this.level = level;
+        this.maxHP = maxHP;
+        this.maxAP = maxAP;
+        this.pokemonBaseDamage = 1 ;
+        this.canEvolve=canEvolve;
+    }
+    public int getLevel() {
+        return level;
+    }
+
     public boolean isCanEvolve() {
         return canEvolve;
     }
+    public void addAttack (Attack ability) {
+        Attack [] attacks = new Attack[this.abilities.length+1];
+        for (int i = 0 ;i < this.abilities.length; i++){
+            attacks[i] = this.abilities[i];
+        }
+        attacks[attacks.length-1]=ability;
+        this.abilities=attacks;
+    }
+    public boolean isEnoughHP () {
+        boolean isEnough = true;
+        if (this.currentHP<(this.maxHP*0.2)){
+            isEnough=false;
+        }
+        return isEnough;
+    }
+    public abstract void everyRoundPassed();
+    public abstract void attackSpecialty ();
+    public abstract int attackSpecialty (Attack attack);
+
 }
 
 

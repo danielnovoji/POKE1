@@ -10,13 +10,18 @@ public abstract class FirePokemon extends Pokemon {
     public void selfDamage() {
         Random random = new Random();
         int selfDamagePercentage;
-        selfDamagePercentage = random.nextInt( 4)+1;
-        if (selfDamagePercentage==4) {
-            selfDamagePercentage=random.nextInt(7)+3;
+        selfDamagePercentage = random.nextInt(4)+1;
+        if (selfDamagePercentage==Constants.TWENTY_FIVE_PERCENT) {
+            selfDamagePercentage=random.nextInt(8)+3;
             removeHP(selfDamagePercentage);
             System.out.println("You've received self damage of " +selfDamagePercentage + "HP.");
         }
     }
 
+    @Override
+    public void attackSpecialty() { selfDamage();}
+    public int attackSpecialty(Attack attack) {
+        return attack.minMaxDamageRandomizer();
     }
+}
 

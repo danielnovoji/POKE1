@@ -2,8 +2,6 @@ public class Constants {
 
     public static final int KICK_ATTACK = 2;
     public static final int STARTING_LEVEL = 1;
-    public static final int ELECTRIC_CHARGE = 0;
-    public static final int TEN_AP=10;
     public static final int PLAYER_ONE=0;
     public static final int PLAYER_TWO=1;
     public static final int ATTACK_SELECTION = 1;
