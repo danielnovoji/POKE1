@@ -20,7 +20,7 @@ public class Fight {
                             new Attack[]{new Attack("Kick", Constants.KICK_COST, Constants.KICK_DAMAGE, Constants.KICK_DAMAGE), new Attack("Assisting Heater", 30, 10, 60),
                                     new Attack("Fire Wing", 30, 30, 30)});
                     case Constants.SALANDIT -> summonPokemon = new Salandit("Salandit", Constants.FIRE_POKEMON, Constants.STARTING_LEVEL, true, 100, 60, 100, 45,
-                            new Attack[]{new Attack("Kick", Constants.KICK_COST, Constants.KICK_DAMAGE, Constants.KICK_DAMAGE), new Attack("Live Coal", 10, 0, 25)});
+                            new Attack[]{new Attack("Kick", Constants.KICK_COST, Constants.KICK_DAMAGE, Constants.KICK_DAMAGE), new Attack("Live Coal", 10, 1, 25)});
 
                     case Constants.ELECTABUZZ -> summonPokemon =  new Electabuzz("Electabuzz", Constants.ELECTRIC_POKEMON, Constants.STARTING_LEVEL, true, 30, 100, 30, 75,
                             new Attack[]{new Attack("Kick", Constants.KICK_COST, Constants.KICK_DAMAGE, Constants.KICK_DAMAGE), new Attack("Thunder", 60, 40, 50)});
@@ -40,8 +40,9 @@ public class Fight {
     }
 
     public void initGame() {
-        System.out.println("Welcome to the Pokemon fight game! " +
-                "Every round that passes you will receive 4HP and 4AP! \n ");
+        System.out.println("\nWelcome to the Pokemon fight game! " +
+                "Every round that the person plays will receive 0-4HP and 0-4AP! \nThe electric pokemon has the ability to use a special ability which grants him full HP and full AP only once! \n" +
+                "The fire pokemon has the ability to damage his enemy twice with a random ability, in return his HP is cut in half and his AP will deplete! \n ");
         Random random= new Random();
         int userChoice;
         int indexOfPokemon= 0;
@@ -64,7 +65,7 @@ public class Fight {
                         "1) Attack your Opponent. \n" +
                         "2) Wait. (Waiting will award you a random bonus!) \n" +
                         "3) Evolve your Pokemon. \n" +
-                        "4) Special Action.");
+                        "4) Special Action. (This option depends on the type of pokemon, more information above!" );
                 userChoice= scanner.nextInt();
 
             } while (userChoice>4||userChoice<1);
@@ -97,8 +98,14 @@ public class Fight {
 
 
         }
+
+
     }
-    private void attack (Pokemon [] selectedPokemon, int indexOfPlayer) {
+
+
+
+    private boolean attack (Pokemon [] selectedPokemon, int indexOfPlayer) {
+        boolean playerFinishedTurn =false;
         printAbilities(selectedPokemon[indexOfPlayer]);
         int userChoice=userChoice(selectedPokemon[indexOfPlayer]);
         int costAp = selectedPokemon[indexOfPlayer].getAbilities()[userChoice-1].getApCost();
@@ -205,8 +212,15 @@ public class Fight {
         System.out.println(selectedPokemon[Constants.PLAYER_ONE]);
         System.out.println(selectedPokemon[Constants.PLAYER_TWO]);
     }
-    private void initAbility () {
 
+    private boolean getWinner (Pokemon[] player, int indexOfPlayer) {
+        boolean isAlive =true;
+        if (player[indexOfPlayer].isAlive()) {
+            System.out.println(player[indexOfPlayer] + "Has won the game!");
+
+        }
+        return isAlive;
     }
+
 }
 
