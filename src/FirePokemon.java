@@ -3,11 +3,11 @@ import java.util.Random;
 public abstract class FirePokemon extends Pokemon {
 
 
-    public FirePokemon(String pokemonName, int pokemonType, int level,boolean canEvolve, int maxHP, int maxAP, int currentHP, int currentAP, Attack[] abilities) {
+    public FirePokemon(String pokemonName, int pokemonType, int level,boolean canEvolve, int maxHP, int maxAP, int currentHP, int currentAP, Attack[] abilities) { //O(1)
         super(pokemonName, pokemonType, level,canEvolve, maxHP, maxAP, currentHP, currentAP, abilities);
     }
 
-    public void selfDamage() {
+    public void selfDamage() { //O(1)
         Random random = new Random();
         int selfDamagePercentage;
         selfDamagePercentage = random.nextInt(4)+1;
@@ -19,9 +19,10 @@ public abstract class FirePokemon extends Pokemon {
     }
 
     @Override
-    public void attackSpecialty() { selfDamage();}
+    public void attackSpecialty() { selfDamage();} //O(1)
+    public void everyRoundPassedOpponent(){} //O(1)
     public int attackSpecialty(Attack attack) {
         return attack.minMaxDamageRandomizer();
-    }
+    } //O(1)
 }
 

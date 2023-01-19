@@ -15,9 +15,9 @@ public abstract class Pokemon {
 
     public Attack[] getAbilities() {
         return abilities;
-    }
+    } //O(1)
 
-    public Pokemon(String pokemonName, int pokemonType, int level,boolean canEvolve, int maxHP, int maxAP, int currentHP, int currentAP, Attack [] abilities) {
+    public Pokemon(String pokemonName, int pokemonType, int level,boolean canEvolve, int maxHP, int maxAP, int currentHP, int currentAP, Attack [] abilities) {  // O(1)
         this.pokemonName = pokemonName;
         this.pokemonType = pokemonType;
         this.level = level;
@@ -30,11 +30,8 @@ public abstract class Pokemon {
         this.canEvolve=canEvolve;
     }
 
-    public void kickAttack (Pokemon affectedPokemon) {
-        affectedPokemon.currentHP -=Constants.KICK_ATTACK;
 
-    }
-    public boolean isFirePokemon () {
+    public boolean isFirePokemon () { //O(1)
         boolean isFire = true;
         if (this.pokemonType==Constants.ELECTRIC_POKEMON) {
             isFire=false;
@@ -42,7 +39,7 @@ public abstract class Pokemon {
         return isFire;
     }
 
-    public boolean attackByAPCost (int attackCost) {
+    public boolean attackByAPCost (int attackCost) { //O(1)
         boolean isEnoughAP=true;
         if (this.currentAP<attackCost) {
             isEnoughAP=false;
@@ -50,33 +47,33 @@ public abstract class Pokemon {
         return isEnoughAP;
     }
 
-    public void addHP (int hp) {
+    public void addHP (int hp) { //O(1)
         if (this.currentHP+hp > this.maxHP) {
             this.currentHP = this.maxHP;
         }else {
             this.currentHP+=hp;
         }
     }
-    public void addAP (int ap) {
+    public void addAP (int ap) { //O(1)
         if (this.currentAP+ap > maxAP) {
             this.currentAP = maxAP;
         } else {
             this.currentAP += ap;
         }
     }
-    public void removeHP (int hp){
+    public void removeHP (int hp){ //O(1)
         if (this.currentHP - hp < 0) {
             this.currentHP=0;
         } else {
             this.currentHP -= hp;
         }
     }
-    public void removeAP (int ap){
+    public void removeAP (int ap){ //O(1)
         if (attackByAPCost(ap)){
             this.currentAP -=ap;
         }
     }
-    public boolean isAlive() {
+    public boolean isAlive() { //O(1)
         boolean isAlive = false;
         if (this.currentHP > 0){
             isAlive=true;
@@ -85,23 +82,23 @@ public abstract class Pokemon {
     }
     public void resetAP () {
         this.currentAP=0;
-    }
+    } //O(1)
     public void makeHalfHP () {
         this.currentHP /=2 ;
-    }
+    } //O(1)
     public void addMaxHP () {
         this.currentHP = this.maxHP;
-    }
+    } //O(1)
     public void addMaxAP () {
         this.currentAP=this.maxAP;
-    }
+    } //O(1)
 
     @Override
-    public String toString() {
+    public String toString() { //O(1)
         return  " " + this.pokemonName+ " "  + "Pokemon Type: " + printPokemonType() + " " + "Current level: " + this.level + " " +
                 "Current HP: " + this.currentHP + "/" + this.maxHP + " Current AP: " + this.currentAP + "/" + this.maxAP;
     }
-    private String printPokemonType () {
+    private String printPokemonType () { //O(1)
         String printType= "Fire Pokemon";
         if (this.pokemonType==Constants.ELECTRIC_POKEMON) {
             printType= "Electric Pokemon";
@@ -109,23 +106,23 @@ public abstract class Pokemon {
         return printType;
     }
 
-    public int getPokemonBaseDamage() {
+    public int getPokemonBaseDamage() { //O(1)
         return pokemonBaseDamage;
-    }
+    } //O(1)
 
     public void setPokemonBaseDamage(int pokemonBaseDamage) {
         this.pokemonBaseDamage = pokemonBaseDamage;
-    }
+    } //O(1)
 
-    public boolean pokemonCanEvolve (int hp, int ap) {
+    public boolean pokemonCanEvolve (int hp, int ap) { //O(1)
         boolean allowedToEvolve= false;
         if (this.currentHP>=hp && this.currentAP>=ap) {
             allowedToEvolve=true;
         }
         return allowedToEvolve;
     }
-    public abstract boolean evolve(int hp, int ap);
-    public void newStats(String pokemonName, int level,boolean canEvolve, int maxHP, int maxAP) {
+    public abstract boolean evolve(int hp, int ap); //O(1)
+    public void newStats(String pokemonName, int level,boolean canEvolve, int maxHP, int maxAP) { //O(1)
         this.pokemonName = pokemonName;
         this.level = level;
         this.maxHP = maxHP;
@@ -135,12 +132,12 @@ public abstract class Pokemon {
     }
     public int getLevel() {
         return level;
-    }
+    } //O(1)
 
     public boolean isCanEvolve() {
         return canEvolve;
-    }
-    public void addAttack (Attack ability) {
+    } //O(1)
+    public void addAttack (Attack ability) { //O(1)
         Attack [] attacks = new Attack[this.abilities.length+1];
         for (int i = 0 ;i < this.abilities.length; i++){
             attacks[i] = this.abilities[i];
@@ -148,17 +145,25 @@ public abstract class Pokemon {
         attacks[attacks.length-1]=ability;
         this.abilities=attacks;
     }
-    public boolean isEnoughHP () {
+    public boolean isEnoughHP () { //O(1)
         boolean isEnough = true;
         if (this.currentHP<(this.maxHP*0.2)){
             isEnough=false;
         }
         return isEnough;
     }
-    public abstract void everyRoundPassed();
-    public abstract void attackSpecialty ();
-    public abstract int attackSpecialty (Attack attack);
+    public abstract void everyRoundPassed(); //O(1)
+    public abstract void everyRoundPassedOpponent(); //O(1)
+    public abstract void attackSpecialty (); //O(1)
+    public abstract int attackSpecialty (Attack attack); //O(1)
 
+    public int getCounterTriple() { //O(1)
+        return counterTriple;
+    }
+
+    public void setCounterTriple(int counterTriple) {
+        this.counterTriple = counterTriple;
+    }
 }
 
 

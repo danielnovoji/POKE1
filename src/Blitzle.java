@@ -6,7 +6,7 @@ public class Blitzle extends ElectricPokemon {
     }
 
     @Override
-    public boolean evolve(int hp, int ap) {
+    public boolean evolve(int hp, int ap) { //O(1)
         boolean evolved=true;
         if (getLevel()==Constants.LVL_ONE){
             if (pokemonCanEvolve(hp, ap)) {

@@ -3,35 +3,34 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Fight {
-    private String [] pokemonNames = new String[]{"Electabuzz","Pichu","Blitzle", "Charmander", "Salandit", "Moltres"};
-
-    private Pokemon createPokemon() {
+    private Pokemon createPokemon() { //O(1)
         Random random = new Random();
-        String pokemon = pokemonNames[random.nextInt(6)];
+
+        String pokemon = Constants.POKEMON_NAMES[random.nextInt(6)];
         Pokemon summonPokemon = null;
                 switch (pokemon) {
                     case Constants.BLITZLE -> summonPokemon =  new Blitzle("Blitzle",Constants.ELECTRIC_POKEMON, Constants.STARTING_LEVEL, true, 90, 35, 90, 26,
                             new Attack[]{new Attack("Kick", Constants.KICK_COST, Constants.KICK_DAMAGE, Constants.KICK_DAMAGE), new Attack("Flop", 20, 20, 25)});
 
                     case Constants.CHARMANDER -> summonPokemon = new Charmander("Charmander", Constants.FIRE_POKEMON, Constants.STARTING_LEVEL, true, 80, 40, 80, 30,
-                            new Attack[]{new Attack("Kick", Constants.KICK_COST, Constants.KICK_DAMAGE, Constants.KICK_DAMAGE), new Attack("Scratch", 15, 25, 30)});
+                            new Attack[]{Constants.KICK, new Attack("Scratch", 15, 25, 30)});
 
                     case Constants.MOLTRES -> summonPokemon = new Moltres("Moltres", Constants.FIRE_POKEMON, Constants.STARTING_LEVEL, false, 120, 60, 120, 45,
-                            new Attack[]{new Attack("Kick", Constants.KICK_COST, Constants.KICK_DAMAGE, Constants.KICK_DAMAGE), new Attack("Assisting Heater", 30, 10, 60),
+                            new Attack[]{Constants.KICK, new Attack("Assisting Heater", 30, 10, 60),
                                     new Attack("Fire Wing", 30, 30, 30)});
                     case Constants.SALANDIT -> summonPokemon = new Salandit("Salandit", Constants.FIRE_POKEMON, Constants.STARTING_LEVEL, true, 100, 60, 100, 45,
-                            new Attack[]{new Attack("Kick", Constants.KICK_COST, Constants.KICK_DAMAGE, Constants.KICK_DAMAGE), new Attack("Live Coal", 10, 1, 25)});
+                            new Attack[]{Constants.KICK, new Attack("Live Coal", 10, 1, 25)});
 
                     case Constants.ELECTABUZZ -> summonPokemon =  new Electabuzz("Electabuzz", Constants.ELECTRIC_POKEMON, Constants.STARTING_LEVEL, true, 30, 100, 30, 75,
-                            new Attack[]{new Attack("Kick", Constants.KICK_COST, Constants.KICK_DAMAGE, Constants.KICK_DAMAGE), new Attack("Thunder", 60, 40, 50)});
+                            new Attack[]{Constants.KICK, new Attack("Thunder", 60, 40, 50)});
 
                     case Constants.PICHU -> summonPokemon = new Pichu("Pichu", Constants.ELECTRIC_POKEMON, Constants.STARTING_LEVEL, true, 40, 30, 40, 22,
-                            new Attack[]{new Attack("Kick", Constants.KICK_COST, Constants.KICK_DAMAGE, Constants.KICK_DAMAGE), new Attack("Quick Attack", 5, 10, 10)});
+                            new Attack[]{Constants.KICK, new Attack("Quick Attack", 5, 10, 10)});
         }
        return summonPokemon;
     }
 
-    private String playerTurn(int indexPlayer){
+    private String playerTurn(int indexPlayer){ //O(1)
         String playerTurn = "Player 2:";
         if (indexPlayer==Constants.PLAYER_ONE){
             playerTurn = "Player 1:";
@@ -39,7 +38,7 @@ public class Fight {
         return playerTurn;
     }
 
-    public void initGame() {
+    public void initGame() { //O(n^2)
         System.out.println("\nWelcome to the Pokemon fight game! " +
                 "Every round that the person plays will receive 0-4HP and 0-4AP! \nThe electric pokemon has the ability to use a special ability which grants him full HP and full AP only once! \n" +
                 "The fire pokemon has the ability to damage his enemy twice with a random ability, in return his HP is cut in half and his AP will deplete! \n ");
@@ -65,7 +64,7 @@ public class Fight {
                         "1) Attack your Opponent. \n" +
                         "2) Wait. (Waiting will award you a random bonus!) \n" +
                         "3) Evolve your Pokemon. \n" +
-                        "4) Special Action. (This option depends on the type of pokemon, more information above!" );
+                        "4) Special Action. (This option depends on the type of pokemon, more information above!)" );
                 userChoice= scanner.nextInt();
 
             } while (userChoice>4||userChoice<1);
@@ -104,7 +103,7 @@ public class Fight {
 
 
 
-    private boolean attack (Pokemon [] selectedPokemon, int indexOfPlayer) {
+    private boolean attack (Pokemon [] selectedPokemon, int indexOfPlayer) { //O(1)
         boolean playerFinishedTurn =false;
         printAbilities(selectedPokemon[indexOfPlayer]);
         int userChoice=userChoice(selectedPokemon[indexOfPlayer]);
@@ -131,12 +130,12 @@ public class Fight {
 
 
 
-    private void printAbilities (Pokemon player) {
+    private void printAbilities (Pokemon player) { //O(n)
         System.out.println("Your abilities are: ");
         for (int i=0; i<player.getAbilities().length; i++){
             System.out.println((i+1)+" )"+player.getAbilities()[i]);
     }}
-    private int userChoice (Pokemon player) {
+    private int userChoice (Pokemon player) { //O(n)
         Scanner scanner= new Scanner(System.in);
         int userChoice;
         do {
@@ -150,7 +149,7 @@ public class Fight {
 
 
 
-    private void waitOption (Pokemon player) {
+    private void waitOption (Pokemon player) {  //O(1)
         Random random= new Random();
         int bonusRandomizer = random.nextInt(4)+1;
         switch (bonusRandomizer){
@@ -172,7 +171,7 @@ public class Fight {
         }
 
     }
-    private boolean evolve (Pokemon  player, int indexOfPlayer) {
+    private boolean evolve (Pokemon  player, int indexOfPlayer) { // O(1)
         boolean  playerFinishedTurn = false;
         if (!player.isCanEvolve()){
             System.out.println("You can't evolve since you've reached your final level! ");
@@ -200,6 +199,8 @@ public class Fight {
             }else {
                 selectedPokemon[Constants.PLAYER_ONE].removeHP(damageOpponent*2);
             }
+            System.out.println("You've dealt " + damageOpponent+ "HP to your opponent using your special ability! \n" +
+                    "your HP has been halved and ap has been reset!");
             selectedPokemon[indexOfPlayer].resetAP();
             selectedPokemon[indexOfPlayer].makeHalfHP();
 
@@ -209,17 +210,20 @@ public class Fight {
         selectedPokemon[indexOfPlayer].addMaxAP();
             System.out.println("You've refilled your HP and AP! ");
         }
-        System.out.println(selectedPokemon[Constants.PLAYER_ONE]);
-        System.out.println(selectedPokemon[Constants.PLAYER_TWO]);
+
     }
 
-    private boolean getWinner (Pokemon[] player, int indexOfPlayer) {
-        boolean isAlive =true;
-        if (player[indexOfPlayer].isAlive()) {
-            System.out.println(player[indexOfPlayer] + "Has won the game!");
+    private Pokemon getWinner (Pokemon[] player, int indexOfPlayer) { // O(1)
+        if (indexOfPlayer == Constants.PLAYER_ONE) {
+                player[Constants.PLAYER_TWO].printName();
+                System.out.println( " Has won the game!");
+            }
+        else {
+            player[Constants.PLAYER_ONE].printName();
+            System.out.println(" Has won the game!");
 
         }
-        return isAlive;
+        return player[indexOfPlayer];
     }
 
 }

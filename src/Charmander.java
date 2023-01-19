@@ -1,13 +1,13 @@
 public class Charmander extends FirePokemon {
 
 
-    public Charmander(String pokemonName, int pokemonType, int level, boolean canEvolve, int maxHP, int maxAP, int currentHP, int currentAP, Attack[] abilities) {
+    public Charmander(String pokemonName, int pokemonType, int level, boolean canEvolve, int maxHP, int maxAP, int currentHP, int currentAP, Attack[] abilities) { //O(1)
         super(pokemonName, pokemonType, level, canEvolve, maxHP, maxAP, currentHP, currentAP, abilities);
     }
 
-    public void everyRoundPassed(){}
+    public void everyRoundPassed(){} //O(1)
 
-    public boolean evolve(int ap, int hp) {
+    public boolean evolve(int ap, int hp) { //O(1)
         boolean hasEvolved=true;
         if (getLevel()==Constants.LVL_ONE){
           if (pokemonCanEvolve(hp, ap)) {

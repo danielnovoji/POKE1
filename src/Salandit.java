@@ -1,13 +1,13 @@
 public class Salandit extends FirePokemon {
 
 
-    public Salandit(String pokemonName, int pokemonType, int level, boolean canEvolve, int maxHP, int maxAP, int currentHP, int currentAP, Attack[] abilities) {
+    public Salandit(String pokemonName, int pokemonType, int level, boolean canEvolve, int maxHP, int maxAP, int currentHP, int currentAP, Attack[] abilities) { //O(1)
         super(pokemonName, pokemonType, level, canEvolve, maxHP, maxAP, currentHP, currentAP, abilities);
     }
 
 
     @Override
-    public boolean evolve(int hp, int ap) {
+    public boolean evolve(int hp, int ap) { //O(1)
         boolean hasEvolved=true;
         if (getLevel()==Constants.LVL_ONE){
             if (pokemonCanEvolve(hp, ap)) {
@@ -27,7 +27,7 @@ public class Salandit extends FirePokemon {
     }
 
     @Override
-    public void everyRoundPassed() {
+    public void everyRoundPassed() { //O(1)
 
     }
 
