@@ -10,7 +10,7 @@ public class Fight {
         Pokemon summonPokemon = null;
                 switch (pokemon) {
                     case Constants.BLITZLE -> summonPokemon =  new Blitzle("Blitzle",Constants.ELECTRIC_POKEMON, Constants.STARTING_LEVEL, true, 90, 35, 90, 26,
-                            new Attack[]{new Attack("Kick", Constants.KICK_COST, Constants.KICK_DAMAGE, Constants.KICK_DAMAGE), new Attack("Flop", 20, 20, 25)});
+                            new Attack[]{Constants.KICK, new Attack("Flop", 20, 20, 25)});
 
                     case Constants.CHARMANDER -> summonPokemon = new Charmander("Charmander", Constants.FIRE_POKEMON, Constants.STARTING_LEVEL, true, 80, 40, 80, 30,
                             new Attack[]{Constants.KICK, new Attack("Scratch", 15, 25, 30)});
@@ -51,12 +51,12 @@ public class Fight {
             selectedPokemons[i] = createPokemon();
 
         }
-        boolean playerFinishedTurn= true;
+        boolean playerFinishedTurn= false;
         boolean usedElectricSpecialAttack=true;
 
         while(selectedPokemons[Constants.PLAYER_ONE].isAlive() && selectedPokemons[Constants.PLAYER_TWO].isAlive()){
             System.out.println(playerTurn(Constants.PLAYER_ONE)+selectedPokemons[Constants.PLAYER_ONE]);
-            System.out.println("---------------------------");
+            System.out.println("------------VS---------------");
             System.out.println(playerTurn(Constants.PLAYER_TWO)+selectedPokemons[Constants.PLAYER_TWO]);
             System.out.println(playerTurn(indexOfPokemon) + " it's your turn!");
             do {
@@ -70,12 +70,16 @@ public class Fight {
             } while (userChoice>4||userChoice<1);
             switch (userChoice){
                 case Constants.ATTACK_SELECTION ->
-                attack(selectedPokemons, indexOfPokemon);
-                case Constants.WAIT_SELECTION -> waitOption(selectedPokemons[indexOfPokemon]);
-                case Constants.EVOLVE_SELECTION -> evolve(selectedPokemons[indexOfPokemon]);
+                        playerFinishedTurn = attack(selectedPokemons, indexOfPokemon);
+                case Constants.WAIT_SELECTION -> {
+                    playerFinishedTurn =true;
+                     waitOption(selectedPokemons[indexOfPokemon]);
+                }
+                case Constants.EVOLVE_SELECTION ->  playerFinishedTurn = evolve(selectedPokemons[indexOfPokemon],indexOfPokemon);
                 case Constants.SPECIAL_ATTACK -> {
                     if (selectedPokemons[indexOfPokemon].isFirePokemon()){
                         specialAttack(selectedPokemons,indexOfPokemon);
+                        playerFinishedTurn = true;
                     } else {
                         if (usedElectricSpecialAttack) {
                             usedElectricSpecialAttack = false;
@@ -87,18 +91,36 @@ public class Fight {
                     }
                 }
             }
-            selectedPokemons[indexOfPokemon].addHP(random.nextInt(5));
-            selectedPokemons[indexOfPokemon].addAP(random.nextInt(5));
-            if (indexOfPokemon==Constants.PLAYER_ONE) {
-                indexOfPokemon=Constants.PLAYER_TWO;
-            } else {
-                indexOfPokemon=Constants.PLAYER_ONE;
+            if (playerFinishedTurn){
+                if (selectedPokemons[indexOfPokemon].getPokemonBaseDamage()==Constants.TRIPLE_DAMAGE){
+                    selectedPokemons[indexOfPokemon].plusCounterTriple();
+                }
+                selectedPokemons[indexOfPokemon].everyRoundPassed();
+                int hpToAdd = random.nextInt(5);
+                int apToAdd = random.nextInt(5);
+                selectedPokemons[indexOfPokemon].addHP(hpToAdd);
+                selectedPokemons[indexOfPokemon].addAP(apToAdd);
+                System.out.println("You've received " +hpToAdd + "HP!");
+                System.out.println("You've received "+apToAdd + "AP!");
+                if (indexOfPokemon==Constants.PLAYER_ONE) {
+                    indexOfPokemon=Constants.PLAYER_TWO;
+                    selectedPokemons[Constants.PLAYER_TWO].everyRoundPassedOpponent();
+                } else {
+                    indexOfPokemon=Constants.PLAYER_ONE;
+                    selectedPokemons[Constants.PLAYER_ONE].everyRoundPassedOpponent();
+                }
+                playerFinishedTurn = false;
             }
+                    if (selectedPokemons[indexOfPokemon].getCounterTriple()==2){
+                        selectedPokemons[indexOfPokemon].setCounterTriple(0);
+                        if (selectedPokemons[indexOfPokemon].getPokemonBaseDamage() == Constants.TRIPLE_DAMAGE) {
+                           selectedPokemons[indexOfPokemon].setPokemonBaseDamage(1);}
+                    }
+
 
 
         }
-
-
+        getWinner(selectedPokemons,indexOfPokemon);
     }
 
 
@@ -109,22 +131,23 @@ public class Fight {
         int userChoice=userChoice(selectedPokemon[indexOfPlayer]);
         int costAp = selectedPokemon[indexOfPlayer].getAbilities()[userChoice-1].getApCost();
         if (selectedPokemon[indexOfPlayer].attackByAPCost(costAp)){
-            if (selectedPokemon[indexOfPlayer].isFirePokemon()) {
-                        int selfDamage = selfDamage();
-                        if(selfDamage>0){
-                            selectedPokemon[indexOfPlayer].removeHP(selfDamage);
-                            System.out.println("You've received self damage of " + selfDamage + " HP.");
-                        }
-
-            } else {
-
-
+            selectedPokemon[indexOfPlayer].removeAP(costAp);
+                selectedPokemon[indexOfPlayer].attackSpecialty();
+                Attack userChoiceAttack = selectedPokemon[indexOfPlayer].getAbilities()[userChoice-1];
+             int hpToRemove=selectedPokemon[indexOfPlayer].attackSpecialty(userChoiceAttack);
+             hpToRemove*=selectedPokemon[indexOfPlayer].getPokemonBaseDamage();
+            if (indexOfPlayer==Constants.PLAYER_ONE){
+                selectedPokemon[Constants.PLAYER_TWO].removeHP(hpToRemove);
+            }else {
+                selectedPokemon[Constants.PLAYER_ONE].removeHP(hpToRemove);
             }
+            System.out.println("You've damaged "+hpToRemove +"HP to your opponent! ");
+                playerFinishedTurn =true;
         }else {
             System.out.println("Not enough AP to use the ability! ");
         }
 
-
+        return playerFinishedTurn;
     }
 
 
@@ -151,7 +174,7 @@ public class Fight {
 
     private void waitOption (Pokemon player) {  //O(1)
         Random random= new Random();
-        int bonusRandomizer = random.nextInt(4)+1;
+        int bonusRandomizer = random.nextInt(3)+1;
         switch (bonusRandomizer){
             case Constants.RANDOM_HP-> {
             int hpReceived=random.nextInt(31)+5;
@@ -169,7 +192,6 @@ public class Fight {
             }
 
         }
-
     }
     private boolean evolve (Pokemon  player, int indexOfPlayer) { // O(1)
         boolean  playerFinishedTurn = false;
@@ -187,17 +209,14 @@ public class Fight {
         }
         return  playerFinishedTurn ;
     }
-    private void specialAttack (Pokemon [] selectedPokemon, int indexOfPlayer) {
-        Random random = new Random();
-        int abilityIndex;
+    private void specialAttack (Pokemon [] selectedPokemon, int indexOfPlayer) { //O(1)
         if (selectedPokemon[indexOfPlayer].isFirePokemon()) {
-            abilityIndex= random.nextInt(selectedPokemon[indexOfPlayer].getAbilities().length);
-            int damageOpponent= selectedPokemon[indexOfPlayer].getAbilities()[abilityIndex].minMaxDamageRandomizer();
-            System.out.println("You've damaged "+damageOpponent + "to your opponent");
+            int damageOpponent= randomDamageForOpponent(selectedPokemon[indexOfPlayer]);
+            damageOpponent+=randomDamageForOpponent(selectedPokemon[indexOfPlayer]);
             if (indexOfPlayer==Constants.PLAYER_ONE){
-                  selectedPokemon[Constants.PLAYER_TWO].removeHP(damageOpponent*2);
+                  selectedPokemon[Constants.PLAYER_TWO].removeHP(damageOpponent);
             }else {
-                selectedPokemon[Constants.PLAYER_ONE].removeHP(damageOpponent*2);
+                selectedPokemon[Constants.PLAYER_ONE].removeHP(damageOpponent);
             }
             System.out.println("You've dealt " + damageOpponent+ "HP to your opponent using your special ability! \n" +
                     "your HP has been halved and ap has been reset!");
@@ -210,6 +229,13 @@ public class Fight {
         selectedPokemon[indexOfPlayer].addMaxAP();
             System.out.println("You've refilled your HP and AP! ");
         }
+
+    }
+    private int randomDamageForOpponent(Pokemon pokemon){ //O(1)
+        Random random = new Random();
+        int abilityIndex;
+        abilityIndex= random.nextInt(pokemon.getAbilities().length);
+         return pokemon.getAbilities()[abilityIndex].minMaxDamageRandomizer();
 
     }
 

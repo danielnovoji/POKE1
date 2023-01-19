@@ -10,6 +10,7 @@ public abstract class Pokemon {
     private Attack [] abilities;
     private int pokemonBaseDamage;
     private boolean canEvolve;
+    private int counterTriple;
 
 
 
@@ -28,7 +29,15 @@ public abstract class Pokemon {
         this.abilities = abilities;
         this.pokemonBaseDamage=1;
         this.canEvolve=canEvolve;
+        this.counterTriple = 0;
     }
+    public void plusCounterTriple(){ //O(1)
+        this.counterTriple++;
+    }
+
+    public void printName(){ // O(1)
+        System.out.print(this.pokemonName);
+    } //O(1)
 
 
     public boolean isFirePokemon () { //O(1)

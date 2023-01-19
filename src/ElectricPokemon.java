@@ -10,20 +10,13 @@ public abstract class ElectricPokemon extends Pokemon {
     public void charge() { //O(1)
         this.electricity += 5;
     }
-    public void attackWithCharge (Attack attack){ //might be needed to be changed
-        if (this.electricity>0) {
-            int damageOpponent = attack.minMaxDamageRandomizer();
-            damageOpponent += (damageOpponent*(this.electricity/100));
-            removeHP(damageOpponent);
-        }
-    }
 
     @Override
     public void attackSpecialty() {} //O(1)
     public int attackSpecialty(Attack attack) { //O(1)
         int damageOpponent = 0;
+        damageOpponent = attack.minMaxDamageRandomizer();
         if (this.electricity>0) {
-            damageOpponent = attack.minMaxDamageRandomizer();
             damageOpponent += (damageOpponent*(this.electricity/100));
         }
         return damageOpponent;
@@ -32,6 +25,9 @@ public abstract class ElectricPokemon extends Pokemon {
         charge();
         hpCheckerForChargeAttack();
     }
+    public void everyRoundPassedOpponent() {
+        hpCheckerForChargeAttack();
+    } //O(1)
 
     private void hpCheckerForChargeAttack () { //O(1)
         if (!isEnoughHP()) {
